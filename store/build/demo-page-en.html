@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Demo article</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.9 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    color: #2f3540; background: #fbfaf8;
+  }
+  .hero {
+    height: 320px;
+    background:
+      radial-gradient(900px 380px at 82% -60px, rgba(255,214,170,.85), rgba(255,214,170,0) 62%),
+      radial-gradient(760px 420px at 8% -40px, rgba(160,196,255,.75), rgba(160,196,255,0) 60%),
+      linear-gradient(150deg, #eef2f8, #f7f2ec 55%, #f2eef7);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-inner { text-align: left; padding: 0 60px 0 560px; }
+  .kicker { font-size: 13px; letter-spacing: .35em; color: #8a90a0; margin-bottom: 14px; }
+  h1 { font-size: 38px; margin: 0 0 14px; letter-spacing: .02em; color: #262c38; }
+  .meta { color: #8a90a0; font-size: 13.5px; }
+  .wrap { max-width: 540px; margin: 0 0 0 560px; padding: 48px 0 90px; }
+  h2 { font-size: 21px; margin: 40px 0 12px; color: #262c38; }
+  h2::before { content: ""; display: inline-block; width: 18px; height: 4px; border-radius: 2px; background: linear-gradient(90deg,#7d94ad,#a88d63); margin-right: 10px; vertical-align: middle; }
+  p { margin: 12px 0; color: #454c59; }
+  .quote {
+    margin: 26px 0; padding: 18px 22px; border-left: 4px solid #a88d63;
+    background: #f7f3ec; border-radius: 0 12px 12px 0; color: #5a5344;
+  }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+  .card { background: #fff; border: 1px solid #ece8e0; border-radius: 14px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(40,42,52,.05); }
+  .card b { display: block; margin-bottom: 6px; color: #333a46; }
+  .card span { color: #767e8c; font-size: 13.5px; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="kicker">LONG READ · 12 MIN</div>
+      <h1>Finding your reading rhythm,<br>one screen at a time</h1>
+      <div class="meta">September 19, 2026 · about 12 minutes</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <p>This is a demo long-form page for screenshots. Scroll, pause, scroll again — reading should feel effortless, but the longer a page gets, the more your wrist complains.</p>
+    <h2>Why it matters</h2>
+    <p>Content platforms stack more into one page: comments, recommendations, promos. Sliding the wheel dozens of times to cross one screen adds up. A pair of tiny floating buttons turns all of that into a single click.</p>
+    <div class="quote">"The point of a tool is to make the repeated motion disappear." — a reader</div>
+    <h2>Three everyday scenes</h2>
+    <div class="cards">
+      <div class="card"><b>Long docs &amp; code</b><span>Flip a full screen with one click — never lose your place.</span></div>
+      <div class="card"><b>Social feeds</b><span>Let the button do the swiping; your thumb can rest.</span></div>
+      <div class="card"><b>Galleries &amp; portfolios</b><span>Hold for a continuous glide, like a smooth scrollbar.</span></div>
+      <div class="card"><b>Papers &amp; ebooks</b><span>Right-click to the very top or bottom — no Home-key mashing.</span></div>
+    </div>
+    <h2>The little things</h2>
+    <p>The buttons never get in the way: they fade out when idle, step aside in fullscreen videos, and you can drag them anywhere — or make them disappear on a specific site.</p>
+    <p>Keep scrolling — you'll spot the two little buttons on the right side of the page. Click, hold, right-click: each gesture has its own job.</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content)</p>
+    <p>… (demo filler content · end of page)</p>
+  </div>
+</body>
+</html>

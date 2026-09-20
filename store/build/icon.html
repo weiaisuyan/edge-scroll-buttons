@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>icon source</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+  .icon {
+    width: 100vw; height: 100vh; box-sizing: border-box;
+    background:
+      radial-gradient(130% 96% at 16% -8%, rgba(255, 255, 255, .44), rgba(255, 255, 255, 0) 52%),
+      linear-gradient(152deg, #5c8ee8 0%, #6a63df 46%, #8a4fc4 100%);
+    border-radius: 24%;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .24);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  /* 顶部高光 */
+  .icon::before {
+    content: ""; position: absolute; left: 6%; right: 6%; top: 0; height: 52%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(255, 255, 255, 0));
+    border-radius: 24% 24% 46% 46%;
+  }
+  /* 底部深度（内部投影） */
+  .icon::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(28, 12, 78, .34), rgba(28, 12, 78, 0) 46%);
+    border-radius: inherit;
+  }
+  .glyph { width: 63%; height: 63%; position: relative; z-index: 1; filter: drop-shadow(0 3% 2% rgba(20, 10, 60, .4)); }
+  .glyph svg { width: 100%; height: 100%; display: block; }
+  .chev { fill: none; stroke: #ffffff; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* 小尺寸（16/32px）粗化模式：更深的底色 + 更粗的笔画 + 更大的图形 —— 保证一眼可辨 */
+  .small .icon {
+    background:
+      radial-gradient(120% 90% at 20% -10%, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 50%),
+      linear-gradient(152deg, #4f7dd8 0%, #5b4fd0 48%, #7a3fb4 100%);
+    box-shadow: none;
+  }
+  .small .icon::after { display: none; }
+  .small .glyph { width: 76%; height: 76%; filter: drop-shadow(0 2% 1.5% rgba(20, 10, 60, .34)); }
+  .small .chev { stroke-width: 4; }
+</style>
+</head>
+<body>
+  <div class="icon">
+    <div class="glyph">
+      <svg viewBox="0 0 24 24">
+        <path class="chev" d="M6.2 9.4L12 3.8l5.8 5.6"/>
+        <path class="chev" d="M6.2 14.6L12 20.2l5.8-5.6"/>
+      </svg>
+    </div>
+  </div>
+  <script>if (location.search.indexOf('small') >= 0) document.documentElement.classList.add('small');</script>
+</body>
+</html>

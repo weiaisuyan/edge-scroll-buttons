@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../shot.css">
+<style>
+  .head { position: absolute; left: 0; right: 0; top: 64px; text-align: center; }
+  .head .sub { margin-top: 12px; }
+  .row { position: absolute; left: 88px; right: 88px; top: 218px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+  .gcard { padding: 30px 26px 26px; display: flex; flex-direction: column; gap: 14px; min-height: 300px; }
+  .gi { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: linear-gradient(140deg, #eef2f7, #e3e9f1); }
+  .gi svg { width: 30px; height: 30px; stroke: #5f7285; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .gcard b { font-size: 18px; }
+  .gcard p { font-size: 13.5px; color: #6b7484; line-height: 1.65; }
+  .gcard .kbd { margin-top: auto; font-size: 12.5px; color: #8a93a3; border-top: 1px dashed #e8ebf1; padding-top: 12px; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 62px; display: flex; justify-content: center; gap: 12px; }
+  h1 { font-size: 42px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="head">
+      <h1>Five gestures, <span class="accent">each with a job</span></h1>
+      <p class="sub">No shortcuts to memorize — one mouse action is enough</p>
+    </div>
+    <div class="row">
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="5"/><line x1="12" y1="6.5" x2="12" y2="10"/><path d="M17 3.6l1.8-1.8M20.4 6.8l2-.6"/></svg></div>
+        <b>Click</b>
+        <p>Flip a full screen (80% by default). Rapid clicks accelerate — three clicks, three screens.</p>
+        <div class="kbd">Click = flip a screen · faster when you chain</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="17" rx="5"/><circle cx="12" cy="9" r="4.6"/><path d="M12 6.8v4.4"/></svg></div>
+        <b>Press &amp; hold</b>
+        <p>Scroll steadily, like dragging a scrollbar. Release or move away to stop immediately.</p>
+        <div class="kbd">Hold = continuous scroll · stops on release</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><path d="M12 4l0 16"/><path d="M8 7.5L12 3.5l4 4M8 16.5l4 4 4-4"/></svg></div>
+        <b>Right-click</b>
+        <p>Right-click the up button to jump to the very top; the down button reaches the very bottom.</p>
+        <div class="kbd">Right-click = top / bottom</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M9 5.5L12 2.5l3 3M9 18.5l3 3 3-3M5.5 9l-3 3 3 3M18.5 9l3 3-3 3"/></svg></div>
+        <b>Ctrl + drag</b>
+        <p>Drag the buttons anywhere you like — the position is saved the moment you let go.</p>
+        <div class="kbd">Anywhere · saved on release</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="15" rx="3"/><path d="M4 8.5h16"/><path d="M9.2 12.2l5.6 5.6M14.8 12.2l-5.6 5.6"/></svg></div>
+        <b>Middle-click</b>
+        <p>Press the mouse wheel on either button to close the current tab instantly.</p>
+        <div class="kbd">Middle-click = close tab · can be turned off</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="chips"><span>Fades when idle</span><span>Hides in fullscreen</span><span>Applies instantly, no refresh</span></div>
+    </div>
+  </div>
+</body>
+</html>

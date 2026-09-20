@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>示例文章页</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.9 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    color: #2f3540; background: #fbfaf8;
+  }
+  .hero {
+    height: 320px;
+    background:
+      radial-gradient(900px 380px at 82% -60px, rgba(255,214,170,.85), rgba(255,214,170,0) 62%),
+      radial-gradient(760px 420px at 8% -40px, rgba(160,196,255,.75), rgba(160,196,255,0) 60%),
+      linear-gradient(150deg, #eef2f8, #f7f2ec 55%, #f2eef7);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-inner { text-align: left; padding: 0 60px 0 560px; }
+  .kicker { font-size: 13px; letter-spacing: .35em; color: #8a90a0; margin-bottom: 14px; }
+  h1 { font-size: 38px; margin: 0 0 14px; letter-spacing: .02em; color: #262c38; }
+  .meta { color: #8a90a0; font-size: 13.5px; }
+  .wrap { max-width: 540px; margin: 0 0 0 560px; padding: 48px 0 90px; }
+  h2 { font-size: 21px; margin: 40px 0 12px; color: #262c38; }
+  h2::before { content: ""; display: inline-block; width: 18px; height: 4px; border-radius: 2px; background: linear-gradient(90deg,#7d94ad,#a88d63); margin-right: 10px; vertical-align: middle; }
+  p { margin: 12px 0; color: #454c59; }
+  .quote {
+    margin: 26px 0; padding: 18px 22px; border-left: 4px solid #a88d63;
+    background: #f7f3ec; border-radius: 0 12px 12px 0; color: #5a5344;
+  }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+  .card { background: #fff; border: 1px solid #ece8e0; border-radius: 14px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(40,42,52,.05); }
+  .card b { display: block; margin-bottom: 6px; color: #333a46; }
+  .card span { color: #767e8c; font-size: 13.5px; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="kicker">LONG READ · 深度长文</div>
+      <h1>在一页一页的滚动里，<br>找回阅读的节奏</h1>
+      <div class="meta">2026 年 9 月 18 日 · 阅读约 12 分钟</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <p>这是一篇用于演示的示例长文页面。滚动、停顿、再翻滚，阅读本应从容不迫——但当页面越来越长，手腕先累了。</p>
+    <h2>为什么这很重要</h2>
+    <p>内容平台把更多东西塞进一页：评论、相关推荐、广告位。手指在滚轮上滑动几十次，才翻过一屏内容。翻页按钮把这件事压缩成了一枚小圆点。</p>
+    <div class="quote">「工具的意义，是让重复的动作消失。」—— 某位不愿透露姓名的读者</div>
+    <h2>三个使用场景</h2>
+    <div class="cards">
+      <div class="card"><b>长文档与代码库</b><span>勘误、日志、issue 列表，一键翻过整屏，不丢上下文。</span></div>
+      <div class="card"><b>社交媒体信息流</b><span>大拇指可以休息一会儿，让按钮替你滑。</span></div>
+      <div class="card"><b>图库与作品集</b><span>按住连续滚动，像握住一根顺滑的滚动条。</span></div>
+      <div class="card"><b>论文与电子书</b><span>右键点到顶、到底，回看目录不再靠狂按 Home 键。</span></div>
+    </div>
+    <h2>细节里的功夫</h2>
+    <p>按钮不会喧宾夺主：闲置几秒后变得透明；进入全屏视频时自动退场；你甚至可以按住 Ctrl 把它拖到任何角落，或者干脆让它在某个网站上消失。</p>
+    <p>继续往下滚动，你会在页面右侧看到那两个小圆点。单击、按住、右键——每种手势都有它自己的脾气。</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容）</p>
+    <p>……（此处省略两千字示例内容 · 页面底部）</p>
+  </div>
+</body>
+</html>

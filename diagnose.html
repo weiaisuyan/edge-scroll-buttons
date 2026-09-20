@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>滚动按钮 · 诊断</title>
+<style>
+  :root { --bg:#f4f3f0; --card:#fff; --fg:#34383f; --muted:#8a8f98; --line:#e6e3dd; --accent:#5f7285; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1f2227; --card:#282c31; --fg:#e8e6e2; --muted:#98a0a8; --line:#3a3f46; --accent:#8fa6ba; } }
+  html, body { margin:0; }
+  body { background:var(--bg); color:var(--fg); font:14px/1.7 "Segoe UI","Microsoft YaHei",system-ui,sans-serif; padding:28px; max-width:760px; margin:0 auto; }
+  h1 { font-size:19px; margin:0 0 14px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin-bottom:14px; }
+  ol { margin:6px 0 0; padding-left:22px; }
+  code { background:rgba(127,127,127,.14); border-radius:4px; padding:1px 6px; }
+  b { color:var(--fg); }
+  #status { color:var(--accent); font-weight:600; }
+  #log { background:rgba(127,127,127,.08); border-radius:8px; padding:10px; font:11.5px/1.6 Consolas,monospace; min-height:90px; white-space:pre-wrap; color:var(--muted); margin:8px 0 0; }
+  #copy { background:var(--accent); color:#fff; border:0; border-radius:10px; padding:12px 26px; font-size:15px; cursor:pointer; margin:4px 0 12px; }
+  #copy:hover { filter:brightness(1.08); }
+  #dump { display:none; width:100%; height:300px; box-sizing:border-box; font:11.5px/1.5 Consolas,monospace; border-radius:8px; border:1px solid var(--line); padding:10px; background:var(--bg); color:var(--fg); }
+</style>
+</head>
+<body>
+  <h1>滚动按钮 · 诊断工具</h1>
+
+  <div class="box">
+    <b>使用方法（1 分钟）：</b>
+    <ol>
+      <li>先到 <code>edge://extensions</code> 点「滚动按钮」的<b>刷新</b>按钮，然后<b>刷新本页面</b>（Ctrl+R）</li>
+      <li>在网页右侧找到两个圆形按钮，做一次：<b>右键按住按钮，拖出去一段距离再松开</b></li>
+      <li>再做一次：<b>左键单击按钮</b>；再做一次：<b>左键按住按钮 1 秒</b></li>
+      <li>点下面的「复制诊断报告」，然后把内容粘贴发给我</li>
+    </ol>
+  </div>
+
+  <div class="box">
+    <div id="status">状态：采集中…（做完上面第 2、3 步后点按钮复制）</div>
+    <pre id="log"></pre>
+  </div>
+
+  <button id="copy">复制诊断报告</button>
+  <textarea id="dump" readonly placeholder="报告将显示在这里（自动复制失败时可手动全选复制）"></textarea>
+
+<script>
+(function () {
+  'use strict';
+  var report = {
+    ts: new Date().toISOString(),
+    url: location.href,
+    ua: navigator.userAgent,
+    host: null,
+    hostChanges: [],
+    events: []
+  };
+  var t0 = performance.now();
+  function stamp() { return Math.round(performance.now() - t0); }
+
+  /* 1) window capture 事件流（最多 400 条） */
+  ['pointerdown', 'pointermove', 'pointerup'].forEach(function (type) {
+    window.addEventListener(type, function (e) {
+      if (report.events.length >= 400) return;
+      var tgt = '?';
+      try {
+        if (e.target && e.target.id) tgt = '#' + e.target.id;
+        else if (e.target && e.target.tagName) tgt = e.target.tagName;
+      } catch (err) {}
+      report.events.push([stamp(), type, e.button, e.buttons, e.defaultPrevented ? 'dp' : '-', tgt]);
+    }, true);
+  });
+  window.addEventListener('contextmenu', function (e) {
+    report.events.push([stamp(), 'contextmenu', e.button, e.buttons, e.defaultPrevented ? 'dp' : '-', '-']);
+  }, true);
+  window.addEventListener('blur', function () { report.events.push([stamp(), 'window-blur']); }, true);
+  window.addEventListener('focus', function () { report.events.push([stamp(), 'window-focus']); }, true);
+
+  /* 2) 扩展注入检测 + 变化监测（只挂一次） */
+  var hooked = false;
+  function checkHost() {
+    var h = document.querySelector('#esb-host');
+    if (!h) { if (!report.host) report.host = { present: false }; return; }
+    var sr = h.shadowRoot;
+    report.host = {
+      present: true,
+      buttons: sr ? sr.querySelectorAll('.esb-btn').length : 0,
+      upTitle: sr && sr.querySelector('.esb-up') ? sr.querySelector('.esb-up').getAttribute('title') : null,
+      hasOldMenu: !!(sr && sr.querySelector('.esb-menu'))
+    };
+    if (hooked) return;
+    hooked = true;
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        if (report.hostChanges.length >= 120) return;
+        if (m.attributeName === 'style') report.hostChanges.push([stamp(), 'style', h.style.left + '/' + h.style.top]);
+        else if (m.attributeName === 'class') report.hostChanges.push([stamp(), 'class', h.className]);
+      });
+    }).observe(h, { attributes: true, attributeFilter: ['style', 'class'] });
+  }
+  setTimeout(checkHost, 800);
+  setTimeout(checkHost, 2500);
+
+  /* 3) 报告生成 */
+  function buildReport() {
+    var h = document.querySelector('#esb-host');
+    report.hostFinal = h ? {
+      present: true,
+      left: h.style.left,
+      top: h.style.top,
+      className: h.className,
+      buttons: h.shadowRoot ? h.shadowRoot.querySelectorAll('.esb-btn').length : 0,
+      upTitle: h.shadowRoot && h.shadowRoot.querySelector('.esb-up') ? h.shadowRoot.querySelector('.esb-up').getAttribute('title') : null
+    } : { present: false };
+    report.eventCount = report.events.length;
+    var styleChanges = report.hostChanges.filter(function (x) { return x[1] === 'style'; }).length;
+    var classChanges = report.hostChanges.filter(function (x) { return x[1] === 'class'; });
+    report.dragDetected = styleChanges > 1;
+    report.draggingClassSeen = classChanges.some(function (x) { return String(x[2]).indexOf('esb-dragging') !== -1; });
+    return JSON.stringify(report, null, 1);
+  }
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var txt = buildReport();
+    var dumpEl = document.getElementById('dump');
+    dumpEl.value = txt;
+    dumpEl.style.display = 'block';
+    var status = document.getElementById('status');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        status.textContent = '状态：已复制 ✓ 直接粘贴发给维护者即可';
+      }, function () {
+        status.textContent = '状态：自动复制失败，请手动全选下方文本复制';
+      });
+    } else {
+      status.textContent = '状态：请手动全选下方文本复制';
+    }
+  });
+
+  /* 实时小预览 */
+  setInterval(function () {
+    var evs = report.events.slice(-6).map(function (x) { return x.join(' '); }).join('\n');
+    var hc = report.hostChanges.slice(-4).map(function (x) { return x.join(' '); }).join('\n');
+    document.getElementById('log').textContent = '最近事件:\n' + evs + '\n\n宿主变化:\n' + hc;
+  }, 400);
+})();
+</script>
+</body>
+</html>

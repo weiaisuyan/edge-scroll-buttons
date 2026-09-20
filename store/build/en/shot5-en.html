@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../shot.css">
+<style>
+  .head { position: absolute; left: 76px; top: 52px; }
+  .head .sub { margin-top: 12px; }
+  .left { position: absolute; left: 76px; top: 196px; width: 546px; }
+  .left img { width: 100%; display: block; border-radius: 14px; border: 1px solid #edf0f5; }
+  .cap { margin-top: 10px; font-size: 12.5px; color: #98a1af; }
+  .right { position: absolute; right: 76px; top: 186px; width: 528px; display: flex; flex-direction: column; gap: 10px; }
+  .item { display: flex; align-items: center; gap: 13px; padding: 13px 18px; }
+  .item .k { font-size: 14px; font-weight: 600; flex: 0 0 158px; }
+  .item .v { font-size: 12.5px; color: #6b7484; line-height: 1.55; }
+  .item .ico { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(140deg, #eef2f7, #e3e9f1); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .item .ico svg { width: 17px; height: 17px; stroke: #5f7285; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  h1 { font-size: 40px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="head">
+      <h1>Every detail, <span class="accent">tuned your way</span></h1>
+      <p class="sub">Settings save automatically; everything stays on your device — back up or restore anytime</p>
+    </div>
+    <div class="left card" style="padding:14px;">
+      <img src="../raw/en/clip_behavior.png">
+      <div class="cap">Settings · Scrolling (flip distance, speeds, hold)</div>
+    </div>
+    <div class="right">
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg></div><div><div class="k">Flip distance</div><div class="v">10% – 100%, 80% of a screen by default</div></div></div>
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M8 19v-9M12 19V8M16 19v-6M20 19V4"/></svg></div><div><div class="k">Speeds</div><div class="v">Flip / jump-to-edge 0.5–10×; hold-scroll 200–3000 px/s</div></div></div>
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6M12 9v6"/></svg></div><div><div class="k">Look &amp; position</div><div class="v">36 styles · 6 families · circle / rounded · size &amp; opacity</div></div></div>
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/></svg></div><div><div class="k">Excluded sites</div><div class="v">Hide the buttons on any site you choose (subdomains included)</div></div></div>
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg></div><div><div class="k">Backup &amp; restore</div><div class="v">Export a settings file; import it to restore anytime</div></div></div>
+      <div class="item card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg></div><div><div class="k">Feedback</div><div class="v">Built-in feedback entry, straight to the developer</div></div></div>
+    </div>
+  </div>
+</body>
+</html>

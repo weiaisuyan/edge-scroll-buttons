@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>滚动按钮</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="menu">
+    <header class="menu-head">
+      <span class="head-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+      <span class="head-title" data-i18n="app_name">滚动按钮</span>
+      <span class="head-ver" id="ver"></span>
+    </header>
+
+    <button class="item" id="openGuide" type="button">
+      <span class="item-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <span class="item-label" data-i18n="popup_guide">用法教程</span>
+      <span class="item-chev">›</span>
+    </button>
+
+    <button class="item" id="openOptions" type="button">
+      <span class="item-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </span>
+      <span class="item-label" data-i18n="popup_settings">设置</span>
+      <span class="item-chev">›</span>
+    </button>
+
+    <div class="sep"></div>
+
+    <div class="site">
+      <div class="site-head">
+        <span class="site-cap" data-i18n="popup_site">当前网站</span>
+        <span class="site-host" id="siteHost" data-i18n="popup_loading">读取中…</span>
+      </div>
+      <button class="item site-row" id="siteToggle" type="button" disabled aria-pressed="false">
+        <span class="item-ico" id="siteIco"></span>
+        <span class="item-label" id="siteLabel" data-i18n="popup_loading">读取中…</span>
+        <span class="sw" id="siteSw"><span class="knob"></span></span>
+      </button>
+      <p class="site-hint" id="siteHint"></p>
+    </div>
+  </div>
+  <script src="shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

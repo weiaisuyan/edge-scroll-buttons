@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="shot.css">
+<style>
+  .left { position: absolute; left: 76px; top: 0; height: 100%; width: 520px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .steps { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .num { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 10px; background: linear-gradient(140deg, #7d94ad, #5f7285); color: #fff; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(95, 114, 133, .35); }
+  .step b { display: block; font-size: 16.5px; margin-bottom: 3px; }
+  .step p { font-size: 14px; color: #6b7484; line-height: 1.65; }
+  .right { position: absolute; right: 74px; top: 0; height: 100%; width: 560px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .popcard { padding: 16px; display: flex; gap: 18px; align-items: center; }
+  .popcard img { width: 330px; border-radius: 12px; display: block; border: 1px solid #edf0f5; }
+  .popcard .cap { font-size: 14px; color: #6b7484; line-height: 1.7; }
+  .popcard .cap b { color: #333c4a; display: block; font-size: 15.5px; margin-bottom: 4px; }
+  .exclcard { padding: 16px; }
+  .exclcard img { width: 100%; border-radius: 12px; display: block; border: 1px solid #edf0f5; }
+  .label { font-size: 13px; color: #98a1af; margin: 0 0 8px 2px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="left">
+      <h1>点图标，弹菜单<br><span class="accent">不想要的网站一键排除</span></h1>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><b>点扩展图标 → 弹出快捷菜单</b><p>「设置」入口 + 当前网站开关，一眼看清状态</p></div></div>
+        <div class="step"><span class="num">2</span><div><b>关掉开关 = 该网站不再显示按钮</b><p>立刻生效、无需刷新；打开开关随时恢复</p></div></div>
+        <div class="step"><span class="num">3</span><div><b>排除名单在设置页自由增删</b><p>支持粘贴完整网址，自动识别域名（含子域名）</p></div></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="popcard card"><img src="raw/esb_raw_popup_off.png"><div class="cap"><b>当前网站：www.zhihu.com</b>已排除 → 按钮立即隐藏，菜单里随时找回</div></div>
+      <div class="exclcard card"><div class="label">设置页 · 网站排除</div><img src="raw/esb_raw_clip_excl.png"></div>
+    </div>
+  </div>
+</body>
+</html>

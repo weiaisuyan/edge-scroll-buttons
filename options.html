@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>滚动按钮 · 设置</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="page">
+    <header class="head">
+      <div>
+        <h1 data-i18n="app_name">滚动按钮</h1>
+        <p class="sub" data-i18n="opt_sub">网页悬浮「上 / 下」按钮 —— 单击翻页 · 按住连滚 · 右键到顶到底</p>
+        <a class="guide-link" href="guide.html" target="_blank" data-i18n="opt_guide_link">第一次用？看 1 分钟用法教程 →</a>
+      </div>
+    </header>
+
+    <section class="card power">
+      <div class="power-row">
+        <div class="power-text">
+          <b><span data-i18n="opt_power_title">在网页上显示按钮</span> <span class="power-tag" data-i18n="opt_power_tag">总开关</span></b>
+          <span data-i18n="opt_power_desc">关闭后所有网站都不显示按钮（各项设置会保留）</span>
+        </div>
+        <label class="switch big"><input type="checkbox" id="visible"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span data-i18n="opt_styles_h2">按钮样式</span> <span class="h2-note" data-i18n="opt_styles_note">36 款 · 6 大分类</span></h2>
+      <div class="styles" id="styles"></div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_shapes_h2">形状与大小</h2>
+      <div class="shapes" id="shapes"></div>
+      <div class="divider"></div>
+      <div class="field"><label for="size" data-i18n="opt_size">按钮大小</label><span class="val" id="sizeVal">52 px</span></div>
+      <input type="range" id="size" min="40" max="160" step="2">
+      <div class="field"><label for="opacity" data-i18n="opt_opacity">按钮透明度</label><span class="val" id="opacityVal">70%</span></div>
+      <input type="range" id="opacity" min="30" max="100" step="5">
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_pos_h2">位置</h2>
+      <div class="pos-wrap">
+        <div class="preview" id="preview">
+          <div class="pv-chrome"><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-addr"></span></div>
+          <div class="pv-hero"></div>
+          <div class="pv-line" style="top:98px; width:76%"></div>
+          <div class="pv-line" style="top:114px; width:90%"></div>
+          <div class="pv-line" style="top:130px; width:62%"></div>
+          <div class="pv-cols"><span></span><span></span></div>
+          <div class="dots" id="dots">
+            <span class="dot"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+            <span class="dot"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+          <div class="preview-hint" data-i18n="opt_pos_hint">点击任意位置放置按钮 · 拖动可微调</div>
+        </div>
+        <div class="pos-side">
+          <div class="pos-text" id="posText">水平 96% · 垂直 50%</div>
+          <p class="note" data-i18n="opt_pos_note1">点击左侧示意页面的任意位置 = 放置按钮；按住拖动 = 微调。</p>
+          <p class="note" data-i18n-html="opt_pos_note2">在网页上随时调整：<strong>Ctrl + 按住按钮拖动</strong>，松手即保存。</p>
+          <p class="note" data-i18n-html="opt_pos_note3">示意页面会实时显示所选<strong>样式、大小、透明度</strong>的效果。</p>
+          <button id="resetPos" class="btn" type="button" data-i18n="opt_reset_pos">恢复默认位置</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_behavior_h2">滚动行为</h2>
+      <div class="field"><label for="ratio" data-i18n="opt_ratio">翻页幅度</label><span class="val" id="ratioVal">80%</span></div>
+      <input type="range" id="ratio" min="10" max="100" step="5">
+      <p class="hint" data-i18n="opt_ratio_hint">左键单击时滚动的距离（占一屏高度）</p>
+      <div class="field"><label for="flipSpeed" data-i18n="opt_flipspeed">翻页速度</label><span class="val" id="flipSpeedVal">1.0 ×</span></div>
+      <input type="range" id="flipSpeed" min="0.5" max="3" step="0.1">
+      <p class="hint" data-i18n="opt_flipspeed_hint">左键单击翻页的快慢（1.0× 为标准）</p>
+      <div class="field"><label for="edgeSpeed" data-i18n="opt_edgespeed">到顶 / 到底速度</label><span class="val" id="edgeSpeedVal">1.0 ×</span></div>
+      <input type="range" id="edgeSpeed" min="0.5" max="10" step="0.1">
+      <p class="hint" data-i18n="opt_edgespeed_hint">右键单击滚到最上 / 最下的快慢（1.0× 为标准）</p>
+      <div class="field"><label for="speed" data-i18n="opt_holdspeed">按住滚动速度</label><span class="val" id="speedVal">700 px/秒</span></div>
+      <input type="range" id="speed" min="200" max="3000" step="50">
+      <p class="hint" data-i18n="opt_holdspeed_hint">按住按钮时每秒滚动多少像素，松开立即停止</p>
+      <div class="field"><label for="delay" data-i18n="opt_holddelay">长按启动延时</label><span class="val" id="delayVal">200 ms</span></div>
+      <input type="range" id="delay" min="100" max="600" step="20">
+      <p class="hint" data-i18n="opt_holddelay_hint">按住多久后开始连续滚动（调短更灵敏）</p>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_extra_h2">快捷操作</h2>
+      <div class="field"><label for="middleClose" data-i18n="opt_middle_close">中键关闭标签</label><label class="switch mini"><input type="checkbox" id="middleClose"></label></div>
+      <p class="hint" data-i18n="opt_middle_close_hint">鼠标中键（滚轮键）单击悬浮按钮：立即关闭当前标签页；页面其他位置不受影响。</p>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_hide_h2">自动隐藏</h2>
+      <div class="field"><label for="idleFade" data-i18n="opt_idle">闲置自动淡化</label><label class="switch mini"><input type="checkbox" id="idleFade"></label></div>
+      <p class="hint" data-i18n="opt_idle_hint">鼠标离开按钮几秒后自动变淡、不挡视线；鼠标靠近立即恢复。</p>
+      <div class="field idle-sub"><label for="idleDelay" data-i18n="opt_idle_delay">多久后淡化</label><span class="val" id="idleDelayVal">3 秒</span></div>
+      <input type="range" id="idleDelay" min="1" max="15" step="1">
+      <div class="field idle-sub"><label for="idleOpacity" data-i18n="opt_idle_opacity">淡化后的透明度</label><span class="val" id="idleOpacityVal">15%</span></div>
+      <input type="range" id="idleOpacity" min="5" max="60" step="5">
+      <div class="divider"></div>
+      <p class="hint" data-i18n="opt_fs_hint">进入全屏（看视频、演示）时，按钮自动隐藏 —— 固定生效，无需设置。</p>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_excl_h2">网站排除</h2>
+      <p class="hint" data-i18n="opt_excl_hint">默认在所有网站显示按钮。加入列表的网站（含其子域名）不显示按钮 —— 例：排除 zhihu.com，则 www.zhihu.com、zhuanlan.zhihu.com 都不显示。</p>
+      <div class="excl-add">
+        <input type="text" id="exclInput" placeholder="输入域名或粘贴网址，如 zhihu.com" spellcheck="false" data-i18n-placeholder="opt_excl_placeholder">
+        <button class="btn" id="exclAdd" type="button" data-i18n="opt_add">添加</button>
+      </div>
+      <p class="hint excl-err" id="exclErr"></p>
+      <div class="excl-list" id="exclList"></div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_bak_h2">备份与恢复</h2>
+      <p class="hint" data-i18n="opt_bak_hint">设置只保存在本机浏览器里（不会自动同步）。换电脑或重装浏览器前，先导出一份备份文件，之后一键恢复。</p>
+      <div class="bak-row">
+        <button class="btn primary" id="bakExport" type="button" data-i18n="opt_bak_export">导出设置文件</button>
+        <button class="btn" id="bakImport" type="button" data-i18n="opt_bak_import">导入设置文件</button>
+        <input type="file" id="bakFile" accept=".json,application/json" hidden>
+      </div>
+      <p class="hint bak-msg" id="bakMsg"></p>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="opt_fb_h2">反馈与建议</h2>
+      <p class="hint" data-i18n="opt_fb_hint">使用中遇到问题、有样式想法或功能建议，欢迎发邮件告诉我（每封必看）：</p>
+      <div class="fb-row">
+        <a class="fb-mail" href="mailto:weiaisuyansjd@gmail.com?subject=%E3%80%8C%E6%BB%9A%E5%8A%A8%E6%8C%89%E9%92%AE%E3%80%8D%E5%8F%8D%E9%A6%88%E4%B8%8E%E5%BB%BA%E8%AE%AE">weiaisuyansjd@gmail.com</a>
+        <button class="btn" id="copyMail" type="button" data-i18n="opt_copy">复制地址</button>
+        <span class="copy-ok" id="copyOk"></span>
+      </div>
+    </section>
+
+    <footer class="foot"><span id="ver"></span><span data-i18n="opt_foot"> · 设置自动保存、即时生效；扩展更新后，已打开的页面需要刷新一次。</span></footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

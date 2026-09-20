@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../shot.css">
+<style>
+  .head { position: absolute; left: 70px; top: 50px; }
+  .head .sub { margin-top: 12px; }
+  .wrap { position: absolute; left: 70px; right: 70px; top: 164px; bottom: 46px; display: flex; flex-direction: column; }
+  .gridcard { flex: 1 1 auto; border-radius: 22px; padding: 26px 32px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+  .grid { display: grid; grid-template-columns: 96px repeat(6, 1fr); row-gap: 13px; column-gap: 6px; align-items: center; }
+  .glabel { font-size: 12.5px; color: #7a8392; letter-spacing: .1em; border-left: 3px solid rgba(125, 148, 173, .55); padding-left: 11px; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .ball { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .ball svg { width: 56%; height: 56%; display: block; }
+  .cname { font-size: 10.5px; color: #7a8392; }
+  .footnote { text-align: center; font-size: 13px; color: #8a93a3; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="head">
+      <h1>36 styles, <span class="accent">6 families</span></h1>
+      <p class="sub">Solid · Gradient · Glass · Breath · Flow · Metal — six each, with pulsing and drifting motion</p>
+    </div>
+    <div class="wrap">
+      <div class="gridcard card">
+        <div class="grid" id="grid"></div>
+        <div class="footnote">All 36 in the settings page — one click to switch · circle &amp; rounded shapes</div>
+      </div>
+    </div>
+  </div>
+  <script src="../shared.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById('grid');
+      ESB_SHARED.STYLE_GROUPS.forEach(function (g) {
+        var lab = document.createElement('div');
+        lab.className = 'glabel';
+        lab.textContent = ESB_SHARED.GROUP_EN[g.id] || g.name;
+        grid.appendChild(lab);
+        Object.keys(ESB_SHARED.STYLES).forEach(function (id) {
+          var s = ESB_SHARED.STYLES[id];
+          if (s.group !== g.id) return;
+          var cell = document.createElement('div');
+          cell.className = 'cell';
+          var b = document.createElement('div');
+          b.className = 'ball';
+          b.style.background = s.bg;
+          b.style.border = s.border;
+          b.style.boxShadow = s.shadow;
+          if (s.blur) b.style.backdropFilter = 'blur(8px)';
+          b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="' + (s.fg || '#fff') + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>';
+          var t = document.createElement('div');
+          t.className = 'cname';
+          t.textContent = ESB_SHARED.NAMES_EN[id] || s.name;
+          cell.appendChild(b);
+          cell.appendChild(t);
+          grid.appendChild(cell);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

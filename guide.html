@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>滚动按钮 · 用法教程</title>
+<style>
+  :root {
+    --bg: #f4f3f0; --card: #ffffff; --fg: #34383f; --muted: #8a8f98;
+    --line: #e6e3dd; --accent: #5f7285; --accent-soft: #dfe5ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1f2227; --card: #282c31; --fg: #e8e6e2; --muted: #98a0a8; --line: #3a3f46; --accent: #8fa6ba; --accent-soft: #33404c; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--fg); font: 13.5px/1.6 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; }
+  .page { max-width: 900px; margin: 0 auto; padding: 34px 24px 56px; }
+
+  .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .logo {
+    width: 46px; height: 46px; border-radius: 12px; flex: 0 0 auto;
+    background:
+      radial-gradient(130% 96% at 16% -8%, rgba(255, 255, 255, .44), rgba(255, 255, 255, 0) 52%),
+      linear-gradient(152deg, #5c8ee8 0%, #6a63df 46%, #8a4fc4 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .24), 0 4px 12px rgba(35, 45, 70, .28);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo svg { width: 58%; height: 58%; }
+  .logo path { fill: none; stroke: #fff; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+  h1 { font-size: 22px; letter-spacing: .01em; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+  /* ---------- 五种手势 ---------- */
+  .grid4 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 780px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  .gcard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .04); }
+  .gcard b { display: block; font-size: 14px; margin: 12px 0 5px; }
+  .gcard p { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+  /* ---------- 演示小舞台 ---------- */
+  .demo { position: relative; height: 106px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); overflow: hidden; }
+  .pg { position: absolute; left: 9%; top: 10px; width: 62%; display: flex; flex-direction: column; gap: 6px; }
+  .pg i { display: block; height: 9px; border-radius: 5px; background: rgba(128, 128, 128, .16); }
+  .pg i:nth-child(2n) { width: 84%; }
+  .pg i:nth-child(3n) { width: 68%; }
+  .pg i.hero { height: 22px; border-radius: 7px; background: linear-gradient(120deg, rgba(125, 148, 173, .3), rgba(168, 141, 99, .2)); }
+  .mini {
+    position: absolute; right: 9px; width: 15px; height: 15px; border-radius: 50%;
+    background: linear-gradient(140deg, #6b849f, #7b6d97);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mini svg { width: 56%; height: 56%; display: block; }
+  .mini path { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .mini.up { top: 27px; }
+  .mini.down { top: 48px; }
+  .cur { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--fg); opacity: .85; }
+  .ring { position: absolute; right: 5px; top: 23px; width: 23px; height: 23px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; }
+  .ring2 { position: absolute; width: 15px; height: 15px; border-radius: 50%; border: 1.6px dashed var(--accent); opacity: 0; }
+  .arrow { position: absolute; right: 14px; width: 8px; height: 8px; border-left: 2px solid var(--accent); border-top: 2px solid var(--accent); transform: rotate(45deg); opacity: 0; }
+
+  /* 单击：翻两屏 + 点击涟漪 */
+  .d-click .pg { animation: pgStep 4.8s ease-in-out infinite; }
+  @keyframes pgStep { 0%, 18% { transform: translateY(0); } 46%, 62% { transform: translateY(-34px); } 90%, 100% { transform: translateY(-68px); } }
+  .d-click .cur { right: 24px; top: 46px; animation: curTap 4.8s ease-in-out infinite; }
+  @keyframes curTap { 0%, 11% { transform: scale(1); } 15% { transform: scale(.7); } 20% { transform: scale(1); } 46%, 56% { transform: scale(1); } 60% { transform: scale(.7); } 65%, 100% { transform: scale(1); } }
+  .d-click .ring { animation: ringTap 4.8s ease-out infinite; }
+  @keyframes ringTap { 0%, 13% { opacity: 0; transform: scale(.5); } 17% { opacity: .9; transform: scale(1); } 32% { opacity: 0; transform: scale(1.4); } 100% { opacity: 0; } }
+
+  /* 按住：匀速滚动 + 呼吸圈 */
+  .d-hold .pg { animation: pgLoop 3s linear infinite; }
+  @keyframes pgLoop { from { transform: translateY(0); } to { transform: translateY(-34px); } }
+  .d-hold .ring { animation: ringHold 1.6s ease-out infinite; }
+  @keyframes ringHold { 0% { opacity: .85; transform: scale(.72); } 70% { opacity: 0; transform: scale(1.5); } 100% { opacity: 0; } }
+
+  /* 右键：跳顶 + 箭头提示 */
+  .d-right .pg { animation: pgJump 4.2s ease-in-out infinite; }
+  @keyframes pgJump { 0%, 36% { transform: translateY(-64px); } 48%, 82% { transform: translateY(0); } 94%, 100% { transform: translateY(-64px); } }
+  .d-right .arrow { animation: arrowUp 4.2s ease infinite; }
+  @keyframes arrowUp { 0%, 40% { opacity: 0; top: 62%; } 52% { opacity: .95; top: 14%; } 78% { opacity: 0; top: 4%; } 100% { opacity: 0; } }
+
+  /* Ctrl 拖动：按钮挪三段，虚线圈跟随 */
+  .d-drag .mini { animation: dragA 5.4s ease-in-out infinite; }
+  .d-drag .mini.down { animation-name: dragB; }
+  @keyframes dragA { 0%, 12% { right: 9px; top: 27px; } 32%, 46% { right: 62%; top: 14px; } 64%, 78% { right: 44%; top: 64px; } 96%, 100% { right: 9px; top: 27px; } }
+  @keyframes dragB { 0%, 12% { right: 9px; top: 48px; } 32%, 46% { right: 62%; top: 35px; } 64%, 78% { right: 44%; top: 85px; } 96%, 100% { right: 9px; top: 48px; } }
+  .d-drag .ring2 { animation: dragRing 5.4s ease-in-out infinite; }
+  @keyframes dragRing { 0%, 12% { right: 9px; top: 27px; opacity: .9; } 32%, 46% { right: 62%; top: 14px; opacity: .9; } 64%, 78% { right: 44%; top: 64px; opacity: .9; } 96%, 100% { right: 9px; top: 27px; opacity: .9; } }
+
+  /* 中键：关闭标签页 —— 页面内容淡出 */
+  .d-mid .pg { animation: pgClose 4.8s ease-in-out infinite; }
+  @keyframes pgClose { 0%, 30% { opacity: 1; } 46%, 86% { opacity: .1; } 96%, 100% { opacity: 1; } }
+  .d-mid .cur { right: 24px; top: 46px; animation: curMid 4.8s ease-in-out infinite; }
+  @keyframes curMid { 0%, 12% { transform: scale(1); } 18% { transform: scale(.7); } 24%, 100% { transform: scale(1); } }
+  .d-mid .ring { right: 5px; top: 44px; animation: ringMid 4.8s ease-out infinite; }
+  @keyframes ringMid { 0%, 15% { opacity: 0; transform: scale(.5); } 21% { opacity: .9; transform: scale(1); } 38% { opacity: 0; transform: scale(1.45); } 100% { opacity: 0; } }
+
+  /* ---------- 贴心设计 ---------- */
+  .tips { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .04); }
+  .tips h2 { font-size: 15px; margin-bottom: 14px; }
+  .tip-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 780px) { .tip-row { grid-template-columns: 1fr; } }
+  .tip b { display: block; font-size: 13.5px; margin-bottom: 4px; }
+  .tip p { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+  .tips .plain { font-size: 13px; color: var(--muted); line-height: 1.8; }
+
+  /* ---------- 结尾 ---------- */
+  .cta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 22px; }
+  .btn { display: inline-block; padding: 10px 20px; border-radius: 10px; font-size: 13.5px; text-decoration: none; transition: filter .15s ease; }
+  .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(95, 114, 133, .38); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .mail { font-size: 12.5px; color: var(--muted); }
+  .mail a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(95, 114, 133, .35); padding-bottom: 1px; }
+  .mail a:hover { border-bottom-color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pg, .cur, .ring, .ring2, .arrow, .mini { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <span class="logo"><svg viewBox="0 0 24 24"><path d="M6.2 9.4L12 3.8l5.8 5.6"/><path d="M6.2 14.6L12 20.2l5.8-5.6"/></svg></span>
+        <h1 data-i18n="guide_title">1 分钟学会「滚动按钮」</h1>
+      </div>
+      <p class="sub" data-i18n="guide_sub">网页右侧那两个小圆钮就是它 —— 下面是全部用法，看完直接去网页上试（动画可循环观看）。</p>
+    </header>
+
+    <section class="grid4">
+      <div class="gcard">
+        <div class="demo d-click">
+          <div class="pg"><i class="hero"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+          <span class="mini down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="ring"></span>
+          <span class="cur"></span>
+        </div>
+        <b data-i18n="g_click_t">单击 = 翻一屏</b>
+        <p data-i18n="g_click_p">点一下，平滑翻过整屏（默认 80%）。快速连点会自动加速，点几下翻几屏。</p>
+      </div>
+
+      <div class="gcard">
+        <div class="demo d-hold">
+          <div class="pg"><i class="hero"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+          <span class="mini down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="ring"></span>
+        </div>
+        <b data-i18n="g_hold_t">按住 = 连续滚</b>
+        <p data-i18n="g_hold_p">按住不放，像握住滚动条一样匀速滚动；松开或鼠标移开立即停下。</p>
+      </div>
+
+      <div class="gcard">
+        <div class="demo d-right">
+          <div class="pg"><i class="hero"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+          <span class="mini down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="arrow"></span>
+        </div>
+        <b data-i18n="g_right_t">右键单击 = 到顶 / 到底</b>
+        <p data-i18n="g_right_p">右键点上按钮 → 一口气滚到页面最上；右键点下按钮 → 直接到最下。</p>
+      </div>
+
+      <div class="gcard">
+        <div class="demo d-drag">
+          <div class="pg"><i class="hero"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+          <span class="mini down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="ring2"></span>
+        </div>
+        <b data-i18n="g_drag_t">Ctrl + 拖动 = 挪位置</b>
+        <p data-i18n="g_drag_p">按住 Ctrl 键、用左键把按钮拖到任何顺手的位置，松手即保存。</p>
+      </div>
+
+      <div class="gcard">
+        <div class="demo d-mid">
+          <div class="pg"><i class="hero"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+          <span class="mini down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="ring"></span>
+          <span class="cur"></span>
+        </div>
+        <b data-i18n="g_middle_t">中键 = 关闭标签页</b>
+        <p data-i18n="g_middle_p">鼠标中键（按下滚轮）单击上/下任意按钮 → 直接关闭当前标签页；不想要时可在设置里关掉。</p>
+      </div>
+    </section>
+
+    <section class="tips">
+      <h2 data-i18n="tips_h2">还有几个贴心设计</h2>
+      <div class="tip-row">
+        <div class="tip"><b data-i18n="tip1_t">闲置自动变淡</b><p data-i18n="tip1_p">鼠标离开几秒后，按钮自动变淡、不挡视线；鼠标靠近立即恢复。</p></div>
+        <div class="tip"><b data-i18n="tip2_t">全屏自动隐藏</b><p data-i18n="tip2_p">看视频、做演示进入全屏时，按钮自动退场，不打扰你。</p></div>
+        <div class="tip"><b data-i18n="tip3_t">按网站排除</b><p data-i18n="tip3_p">点扩展图标 → 一键禁用当前网站；名单在设置页管理（支持整个域名）。</p></div>
+      </div>
+    </section>
+
+    <section class="tips">
+      <h2 data-i18n="more_h2">想要更好看？</h2>
+      <p class="plain" data-i18n-html="more_p">设置页里有 <b>36 款样式</b>（纯色 / 渐变 / 玻璃 / 呼吸 / 流光 / 金属）、圆形与圆角两种形状，还能调整翻页幅度与各段速度。换电脑或重装浏览器前，记得在「备份与恢复」里导出一份设置文件。</p>
+    </section>
+
+    <section class="cta">
+      <a class="btn primary" href="options.html" target="_blank" data-i18n="guide_open_settings">打开设置</a>
+      <span class="mail"><span data-i18n="guide_feedback">遇到问题或有建议：</span><a href="mailto:weiaisuyansjd@gmail.com?subject=%E3%80%8C%E6%BB%9A%E5%8A%A8%E6%8C%89%E9%92%AE%E3%80%8D%E5%8F%8D%E9%A6%88%E4%B8%8E%E5%BB%BA%E8%AE%AE">weiaisuyansjd@gmail.com</a></span>
+    </section>
+  </div>
+  <script src="shared.js"></script>
+  <script src="guide.js"></script>
+</body>
+</html>

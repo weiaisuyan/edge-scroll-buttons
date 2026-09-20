@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="shot.css">
+<style>
+  .head { position: absolute; left: 0; right: 0; top: 64px; text-align: center; }
+  .head .sub { margin-top: 12px; }
+  .row { position: absolute; left: 88px; right: 88px; top: 218px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+  .gcard { padding: 30px 26px 26px; display: flex; flex-direction: column; gap: 14px; min-height: 300px; }
+  .gi { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: linear-gradient(140deg, #eef2f7, #e3e9f1); }
+  .gi svg { width: 30px; height: 30px; stroke: #5f7285; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .gcard b { font-size: 19px; }
+  .gcard p { font-size: 14px; color: #6b7484; line-height: 1.7; }
+  .gcard .kbd { margin-top: auto; font-size: 12.5px; color: #8a93a3; border-top: 1px dashed #e8ebf1; padding-top: 12px; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 62px; display: flex; justify-content: center; gap: 12px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="head">
+      <h1>五种手势，<span class="accent">各有分工</span></h1>
+      <p class="sub">不用记快捷键，鼠标一个动作就够</p>
+    </div>
+    <div class="row">
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="5"/><line x1="12" y1="6.5" x2="12" y2="10"/><path d="M17 3.6l1.8-1.8M20.4 6.8l2-.6"/></svg></div>
+        <b>单击</b>
+        <p>平滑翻过一整屏（默认 80%）；快速连点会连续加速，点几下翻几屏。</p>
+        <div class="kbd">单击 = 翻一屏 · 连点 = 越点越快</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="17" rx="5"/><circle cx="12" cy="9" r="4.6"/><path d="M12 6.8v4.4"/></svg></div>
+        <b>按住不放</b>
+        <p>像握住滚动条一样匀速滚动，松开或移开立即停下。</p>
+        <div class="kbd">按住 = 持续滚动 · 松开即停</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><path d="M12 4l0 16"/><path d="M8 7.5L12 3.5l4 4M8 16.5l4 4 4-4"/></svg></div>
+        <b>右键单击</b>
+        <p>点页面上的「上」按钮 → 一口气滚到最上；「下」按钮 → 滚到最下。</p>
+        <div class="kbd">右键 = 直达顶部 / 底部</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M9 5.5L12 2.5l3 3M9 18.5l3 3 3-3M5.5 9l-3 3 3 3M18.5 9l3 3-3 3"/></svg></div>
+        <b>Ctrl + 按住拖动</b>
+        <p>把按钮拖到任何顺手的位置，松开即记住。</p>
+        <div class="kbd">任意位置 · 松手即保存</div>
+      </div>
+      <div class="gcard card">
+        <div class="gi"><svg viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="15" rx="3"/><path d="M4 8.5h16"/><path d="M9.2 12.2l5.6 5.6M14.8 12.2l-5.6 5.6"/></svg></div>
+        <b>中键单击</b>
+        <p>鼠标中键（按下滚轮）点上/下按钮 → 直接关闭当前标签页。</p>
+        <div class="kbd">中键 = 关闭标签页 · 可在设置中关闭</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="chips"><span>闲置几秒自动变淡</span><span>全屏时自动隐藏</span><span>设置即时生效，无需刷新</span></div>
+    </div>
+  </div>
+</body>
+</html>

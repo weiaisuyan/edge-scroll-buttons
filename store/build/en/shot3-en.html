@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../shot.css">
+<style>
+  .left { position: absolute; left: 76px; top: 0; height: 100%; width: 520px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .steps { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .num { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 10px; background: linear-gradient(140deg, #7d94ad, #5f7285); color: #fff; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(95, 114, 133, .35); }
+  .step b { display: block; font-size: 16px; margin-bottom: 3px; }
+  .step p { font-size: 13.5px; color: #6b7484; line-height: 1.6; }
+  .right { position: absolute; right: 74px; top: 0; height: 100%; width: 560px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .popcard { padding: 16px; display: flex; gap: 18px; align-items: center; }
+  .popcard img { width: 330px; border-radius: 12px; display: block; border: 1px solid #edf0f5; }
+  .popcard .cap { font-size: 13.5px; color: #6b7484; line-height: 1.7; }
+  .popcard .cap b { color: #333c4a; display: block; font-size: 15px; margin-bottom: 4px; }
+  .exclcard { padding: 16px; }
+  .exclcard img { width: 100%; border-radius: 12px; display: block; border: 1px solid #edf0f5; }
+  .label { font-size: 13px; color: #98a1af; margin: 0 0 8px 2px; }
+  h1 { font-size: 40px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="left">
+      <h1>Click the icon,<br><span class="accent">exclude any site in one tap</span></h1>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><b>The toolbar icon opens a quick menu</b><p>Settings entry + a switch for the current site, right where you need them</p></div></div>
+        <div class="step"><span class="num">2</span><div><b>Flip the switch — no buttons on that site</b><p>Applies instantly, no refresh needed; flip it back anytime</p></div></div>
+        <div class="step"><span class="num">3</span><div><b>Manage the list in Settings</b><p>Paste a full URL and the domain is recognized automatically (subdomains included)</p></div></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="popcard card"><img src="../raw/en/popup_off.png"><div class="cap"><b>Current site: zhihu.com</b>Excluded → the buttons disappear instantly; bring them back from the menu anytime</div></div>
+      <div class="exclcard card"><div class="label">Settings · Excluded sites</div><img src="../raw/en/clip_excl.png"></div>
+    </div>
+  </div>
+</body>
+</html>
