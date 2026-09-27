@@ -196,7 +196,7 @@
       cancelFlip();
       return;
     }
-    host.style.display = fsActive ? 'none' : 'block';
+    host.style.display = (fsActive || mutedFrame()) ? 'none' : 'block';
     host.style.setProperty('--esb-op', String(settings.opacity));
     host.style.setProperty('--esb-idle-op', String(settings.idleOpacity));
     scheduleIdle();
@@ -300,7 +300,7 @@
       host.style.display = 'none';
       return;
     }
-    host.style.display = 'block';
+    host.style.display = mutedFrame() ? 'none' : 'block';
     scheduleIdle();
     place();
   }
@@ -336,6 +336,42 @@
     } catch (err) {
       return se;
     }
+  }
+
+  /* ---------------- 本框架是否"没事可干"（iframe 外壳页适配） ----------------
+
+     有些站点把正文整块塞进 <iframe>，外层只是壳（learn.html 这类课件站、
+     云文档、老式后台）。壳自己一点滚不动，按钮却浮在最上面，把内层框架那套
+     按钮整个盖住 → 点上去永远没反应。
+     规则（保守，宁可不隐藏）：
+       ① 当前文档自己能滚 → 正常显示；
+       ② 自己在子框架里且自己滚不动 → 隐藏（子框架里没得滚就不该有按钮）；
+       ③ 自己是顶层、自己滚不动，但内部有能滚的同源子框架 → 隐藏（让位给内层那套）。
+     副作用边界：顶层滚不动、也没有同源可滚子框架的页面（如极短的静态页）
+     一律维持原行为=显示，避免懒加载页面在加载早期被误判后按钮再也不出现。 */
+
+  function docScrollable() {
+    const se = document.scrollingElement || document.documentElement;
+    return !!(se && se.scrollHeight - se.clientHeight > 4);
+  }
+
+  function anySameOriginChildScrolls() {
+    const frames = document.querySelectorAll('iframe, frame');
+    for (let i = 0; i < frames.length; i++) {
+      try {
+        const d = frames[i].contentDocument;
+        if (!d) continue;
+        const se = d.scrollingElement || d.documentElement;
+        if (se && se.scrollHeight - se.clientHeight > 4) return true;
+      } catch (err) { /* 跨域框架读不到内容，跳过 */ }
+    }
+    return false;
+  }
+
+  function mutedFrame() {
+    if (docScrollable()) return false;
+    if (window.top !== window) return true;
+    return anySameOriginChildScrolls();
   }
 
   function setTop(target, top) {
