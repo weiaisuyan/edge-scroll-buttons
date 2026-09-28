@@ -269,6 +269,10 @@
     S.middleClose = e.target.checked;
     save(true);
   });
+  $('hideXhsAi').addEventListener('change', (e) => {
+    S.hideXhsAi = e.target.checked;
+    save(true);
+  });
 
   /* ---------- 自动隐藏 ---------- */
   function syncIdleControls() {
@@ -401,6 +405,7 @@
     if (typeof raw.visible === 'boolean') { out.visible = raw.visible; hit++; }
     if (typeof raw.idleFade === 'boolean') { out.idleFade = raw.idleFade; hit++; }
     if (typeof raw.middleClose === 'boolean') { out.middleClose = raw.middleClose; hit++; }
+    if (typeof raw.hideXhsAi === 'boolean') { out.hideXhsAi = raw.hideXhsAi; hit++; }
     Object.keys(NUM_RANGES).forEach((k) => {
       const v = raw[k];
       if (typeof v === 'number' && isFinite(v)) {
@@ -501,6 +506,7 @@
   function render() {
     $('visible').checked = !!S.visible;
     $('middleClose').checked = S.middleClose !== false;
+    $('hideXhsAi').checked = S.hideXhsAi !== false;
     $('size').value = S.size;
     $('sizeVal').textContent = Math.round(S.size) + ' px';
     $('opacity').value = Math.round(S.opacity * 100);

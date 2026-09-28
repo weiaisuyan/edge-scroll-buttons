@@ -65,6 +65,7 @@
         if (area === 'local' && changes.settings && changes.settings.newValue) {
           settings = Object.assign({}, DEFAULTS, changes.settings.newValue);
           applyAll();
+          applyXhsAi();
         }
       });
     } catch (err) { /* 忽略 */ }
@@ -670,12 +671,110 @@
     } catch (err) { /* 忽略 */ }
   }
 
+  /* ---------------- 小红书搜索页：隐藏「点点」AI 总结面板 ---------------- */
+
+  /* 小红书搜索结果页会自动从右侧弹出「点点」AI 总结抽屉（元素 = #app > .container，
+     关闭态在元素上带 .out 类）。本功能开启时：
+       ① 注入一条 CSS 直接隐藏该抽屉（不挡搜索结果、不闪一下）；
+       ② 抽屉每次被打开时点掉它的关闭按钮，让站点自己把状态收回（避免残留遮罩/侧栏位移）。
+     只在 xiaohongshu.com 的搜索页生效，其他网站与其他页面完全不受影响。 */
+
+  const XHS_AI_STYLE_ID = 'esb-xhs-ai-hide';
+  const XHS_AI_CSS = '#app > .container{display:none !important;}';
+  const XHS_AI_MAX_CLOSES = 20;   // 同一页面最多自动关闭次数（防站点反复弹时死循环）
+  let xhsAiObserver = null;
+  let xhsAiTimer = 0;
+  let xhsAiCloses = 0;
+  let xhsAiLastClose = 0;
+  let xhsAiLastUrl = '';
+
+  function xhsIsSite() {
+    try { return /(^|\.)xiaohongshu\.com$/i.test(location.hostname); } catch (err) { return false; }
+  }
+
+  function xhsIsSearchPage() {
+    try { return xhsIsSite() && location.pathname.indexOf('/search_result') === 0; } catch (err) { return false; }
+  }
+
+  function applyXhsAi() {
+    if (window.top !== window) return;   // 只在顶层文档处理
+    if (!xhsIsSite()) return;
+    const on = settings.hideXhsAi !== false && xhsIsSearchPage();
+    let el = document.getElementById(XHS_AI_STYLE_ID);
+    if (!on) {
+      if (el) el.remove();
+      if (xhsAiObserver) { xhsAiObserver.disconnect(); xhsAiObserver = null; }
+      return;
+    }
+    if (!el) {
+      el = document.createElement('style');
+      el.id = XHS_AI_STYLE_ID;
+      (document.head || document.documentElement).appendChild(el);
+    }
+    el.textContent = XHS_AI_CSS;
+    startXhsAiWatch();
+    closeXhsAiPanel(true);
+  }
+
+  /* 判断抽屉是否处于「打开」状态：元素存在且不带 .out */
+  function xhsAiPanelOpen() {
+    const panel = document.querySelector('#app > .container');
+    return panel && !panel.classList.contains('out') ? panel : null;
+  }
+
+  function closeXhsAiPanel(force) {
+    if (!xhsIsSearchPage()) return;
+    const panel = xhsAiPanelOpen();
+    if (!panel) return;
+    const now = Date.now();
+    if (!force && (xhsAiCloses >= XHS_AI_MAX_CLOSES || now - xhsAiLastClose < 400)) return;
+    xhsAiCloses++;
+    xhsAiLastClose = now;
+    const btn = panel.querySelector('.header .right button.close-icon') || panel.querySelector('button.close-icon');
+    if (btn) {
+      try {
+        btn.click();
+        // 点完再确认一次：站点状态若仍未收回，直接把抽屉标记为关闭态（本扩展已隐藏它，不影响观感）
+        setTimeout(() => { if (xhsAiPanelOpen()) panel.classList.add('out'); }, 700);
+        return;
+      } catch (err) { /* 落到兜底 */ }
+    }
+    panel.classList.add('out');
+  }
+
+  function scheduleXhsAiCheck() {
+    if (xhsAiTimer) return;
+    xhsAiTimer = setTimeout(() => { xhsAiTimer = 0; closeXhsAiPanel(false); }, 250);
+  }
+
+  function startXhsAiWatch() {
+    if (xhsAiObserver) return;
+    const app = document.getElementById('app');
+    if (!app) return;
+    xhsAiObserver = new MutationObserver(scheduleXhsAiCheck);
+    xhsAiObserver.observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  }
+
+  /* 站点是单页应用：站内跳转不重新加载页面，需轮询地址变化后重新判定是否该生效 */
+  function watchXhsNav() {
+    if (!xhsIsSite()) return;
+    xhsAiLastUrl = location.href;
+    setInterval(() => {
+      if (location.href !== xhsAiLastUrl) {
+        xhsAiLastUrl = location.href;
+        applyXhsAi();
+      }
+    }, 1000);
+  }
+
   /* ---------------- 启动 ---------------- */
 
   readSettings(() => {
     build();
     watchSettings();
     applyAll();
+    applyXhsAi();           // 小红书搜索页：隐藏「点点」AI 面板
+    watchXhsNav();
     onFullscreenChange();   // 初始同步（如扩展刷新时页面正处于全屏）
   });
 })();
