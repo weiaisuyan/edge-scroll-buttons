@@ -732,13 +732,10 @@
     xhsAiLastClose = now;
     const btn = panel.querySelector('.header .right button.close-icon') || panel.querySelector('button.close-icon');
     if (btn) {
-      try {
-        btn.click();
-        // 点完再确认一次：站点状态若仍未收回，直接把抽屉标记为关闭态（本扩展已隐藏它，不影响观感）
-        setTimeout(() => { if (xhsAiPanelOpen()) panel.classList.add('out'); }, 700);
-        return;
-      } catch (err) { /* 落到兜底 */ }
+      // 先点它的关闭按钮（站点若响应，会自己把状态收回、连遮罩一起清理）
+      try { btn.click(); } catch (err) { /* 忽略 */ }
     }
+    // 无论如何立刻补标关闭态：站点对程序化点击不一定有反应，不能指望它；本扩展已隐藏该抽屉，改类不影响观感
     panel.classList.add('out');
   }
 
