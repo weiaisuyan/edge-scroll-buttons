@@ -680,7 +680,9 @@
      只在 xiaohongshu.com 的搜索页生效，其他网站与其他页面完全不受影响。 */
 
   const XHS_AI_STYLE_ID = 'esb-xhs-ai-hide';
-  const XHS_AI_CSS = '#app > .container{display:none !important;}';
+  // 两种形态都要覆盖：旧结构 = #app > .container（右侧抽屉）；新结构 = AI 搜索页（/search_result_ai）右侧常驻的「点点」对话栏（ai-chat-section + 分隔条）
+  const XHS_AI_CSS = '#app > .container{display:none !important;}' +
+    '#app .ai-chat-section,#app .ai-chat-section-divider{display:none !important;}';
   const XHS_AI_MAX_CLOSES = 20;   // 同一页面最多自动关闭次数（防站点反复弹时死循环）
   let xhsAiObserver = null;
   let xhsAiTimer = 0;
