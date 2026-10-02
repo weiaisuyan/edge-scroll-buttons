@@ -671,13 +671,15 @@
     } catch (err) { /* 忽略 */ }
   }
 
-  /* ---------------- 小红书搜索页：隐藏「点点」AI 总结面板 ---------------- */
+  /* ---------------- 小红书：隐藏「点点」AI 面板（全站生效） ---------------- */
 
-  /* 小红书搜索结果页会自动从右侧弹出「点点」AI 总结抽屉（元素 = #app > .container，
-     关闭态在元素上带 .out 类）。本功能开启时：
-       ① 注入一条 CSS 直接隐藏该抽屉（不挡搜索结果、不闪一下）；
-       ② 抽屉每次被打开时点掉它的关闭按钮，让站点自己把状态收回（避免残留遮罩/侧栏位移）。
-     只在 xiaohongshu.com 的搜索页生效，其他网站与其他页面完全不受影响。 */
+  /* 小红书的「点点」AI 面板（元素 = #app > .container，关闭态在元素上带 .out 类）会在浏览时
+     自动弹出（搜索结果页、点开笔记后等场景）。本功能开启时：
+       ① 注入一条 CSS 直接隐藏该面板（不挡内容、不闪一下）；
+       ② 面板每次被打开时点掉它的关闭按钮，让站点自己把状态收回（避免残留遮罩/侧栏位移）。
+     作用于整个 xiaohongshu.com（含搜索页、从搜索进入的笔记详情及站内其他页面）。
+     早期版本只在搜索页生效：点进笔记（/explore/<id>）时样式会被移除、面板又会出现，
+     所以改为全站保持。其他网站完全不受影响。 */
 
   const XHS_AI_STYLE_ID = 'esb-xhs-ai-hide';
   // 两种形态都要覆盖：旧结构 = #app > .container（右侧抽屉）；新结构 = AI 搜索页（/search_result_ai）右侧常驻的「点点」对话栏（ai-chat-section + 分隔条）
@@ -694,14 +696,10 @@
     try { return /(^|\.)xiaohongshu\.com$/i.test(location.hostname); } catch (err) { return false; }
   }
 
-  function xhsIsSearchPage() {
-    try { return xhsIsSite() && location.pathname.indexOf('/search_result') === 0; } catch (err) { return false; }
-  }
-
   function applyXhsAi() {
     if (window.top !== window) return;   // 只在顶层文档处理
     if (!xhsIsSite()) return;
-    const on = settings.hideXhsAi !== false && xhsIsSearchPage();
+    const on = settings.hideXhsAi !== false;
     let el = document.getElementById(XHS_AI_STYLE_ID);
     if (!on) {
       if (el) el.remove();
@@ -725,7 +723,7 @@
   }
 
   function closeXhsAiPanel(force) {
-    if (!xhsIsSearchPage()) return;
+    if (!xhsIsSite()) return;
     const panel = xhsAiPanelOpen();
     if (!panel) return;
     const now = Date.now();
@@ -754,7 +752,8 @@
     xhsAiObserver.observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   }
 
-  /* 站点是单页应用：站内跳转不重新加载页面，需轮询地址变化后重新判定是否该生效 */
+  /* 站点是单页应用：站内跳转不重新加载页面。轮询地址变化并重跑检查——
+     保证跳转（如搜索页 → 笔记详情）后隐藏样式仍然在、在途打开的面板继续被收回 */
   function watchXhsNav() {
     if (!xhsIsSite()) return;
     xhsAiLastUrl = location.href;
@@ -772,7 +771,7 @@
     build();
     watchSettings();
     applyAll();
-    applyXhsAi();           // 小红书搜索页：隐藏「点点」AI 面板
+    applyXhsAi();           // 小红书：隐藏「点点」AI 面板（全站）
     watchXhsNav();
     onFullscreenChange();   // 初始同步（如扩展刷新时页面正处于全屏）
   });

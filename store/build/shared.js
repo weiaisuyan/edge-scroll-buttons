@@ -18,7 +18,7 @@ var ESB_SHARED = {
     styleId: 'ink',    // 按钮样式
     visible: true,     // 是否在页面上显示按钮
     excludedSites: [], // 网站排除列表：其中的网站（含子域名）不显示按钮
-    hideXhsAi: true    // 小红书搜索页：隐藏并关闭自动弹出的「点点」AI 总结面板
+    hideXhsAi: true    // 小红书全站：隐藏并关闭自动弹出的「点点」AI 面板
   },
 
   /* 样式分类（设置页与文档共用；每类数量保持一致，便于浏览） */
