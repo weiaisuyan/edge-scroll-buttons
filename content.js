@@ -315,27 +315,78 @@
     return oy === 'auto' || oy === 'scroll' || oy === 'overlay';
   }
 
+  /* 元素可视面积是否达到「主区域」标准：面积 ≥ 视口 1/4，或高度 ≥ 视口一半。
+     浮层里的大滚动区（笔记详情/评论区、模态内容区）算主区域；
+     细小的浮窗、侧栏滚动块不算，不去抢翻页目标。 */
+  function mainArea(el) {
+    const r = el.getBoundingClientRect();
+    const w = Math.min(Math.max(r.width, 0), window.innerWidth);
+    const h = Math.min(Math.max(r.height, 0), window.innerHeight);
+    return (w * h >= 0.25 * window.innerWidth * window.innerHeight) ||
+      (el.clientHeight >= 0.5 * window.innerHeight);
+  }
+
+  /* 元素是否「可见且未被遮挡」：取矩形中心（夹进视口内）做命中测试，
+     命中自己或自己的后代才算可见。被浮层遮罩盖住的背景容器会被排除。 */
+  function isUncovered(el) {
+    const r = el.getBoundingClientRect();
+    if (r.width < 40 || r.height < 40) return false;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.opacity === '0') return false;
+    const cx = Math.min(Math.max(r.left + r.width / 2, 1), window.innerWidth - 1);
+    const cy = Math.min(Math.max(r.top + r.height / 2, 1), window.innerHeight - 1);
+    const hit = document.elementFromPoint(cx, cy);
+    return !!(hit && (hit === el || el.contains(hit)));
+  }
+
+  /* 视口中心点所在的可滚祖先：优先「主区域」级别的；只有小滚动块时退回第一个找到的 */
+  function centerScroller() {
+    let el = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+    let first = null;
+    while (el && el !== document.body && el !== document.documentElement) {
+      if (canScrollEl(el)) {
+        if (mainArea(el)) return el;
+        if (!first) first = el;
+      }
+      el = el.parentElement;
+    }
+    return first;
+  }
+
+  /* 可见且未被遮挡的可滚容器里，滚程（scrollHeight-clientHeight）最大者 */
+  function largestUncoveredScroller() {
+    let best = null;
+    let bestD = 4;
+    const nodes = document.querySelectorAll('div, main, section, article');
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      if (!canScrollEl(n) || !isUncovered(n)) continue;
+      const d = n.scrollHeight - n.clientHeight;
+      if (d > bestD) { bestD = d; best = n; }
+    }
+    return best;
+  }
+
+  /* 滚动目标选择（与键盘翻页 / 滚轮「看哪儿滚哪儿」对齐）：
+     ① 视口中心点所在的可滚祖先 —— 浮层内容区/主内容区优先于文档根；
+     ② 可见且未被遮挡的可滚容器里滚程最大者 —— 被浮层遮住的背景列表会被排除；
+     ③ 文档根 —— 普通长页面（保持原行为）。
+     旧行为是「文档根能滚就无脑用它」，在「笔记详情浮层盖住列表」这类页面上会去滚背景列表。 */
   function getTarget() {
-    const se = document.scrollingElement || document.documentElement;
-    if (se && se.scrollHeight - se.clientHeight > 4) return se;
     try {
-      let el = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
-      while (el && el !== document.body && el !== document.documentElement) {
-        if (canScrollEl(el)) return el;
-        el = el.parentElement;
-      }
-      let best = null;
-      let bestD = 4;
-      const nodes = document.querySelectorAll('div, main, section, article');
-      for (let i = 0; i < nodes.length; i++) {
-        const n = nodes[i];
-        if (!canScrollEl(n)) continue;
-        const d = n.scrollHeight - n.clientHeight;
-        if (d > bestD) { bestD = d; best = n; }
-      }
-      return best;
+      const se = document.scrollingElement || document.documentElement;
+      const rootOk = !!(se && se.scrollHeight - se.clientHeight > 4);
+
+      const chain = centerScroller();
+      if (chain && (!rootOk || mainArea(chain))) return chain;
+
+      const cand = largestUncoveredScroller();
+      if (cand && (!rootOk || mainArea(cand))) return cand;
+
+      if (rootOk) return se;
+      return chain || cand || null;
     } catch (err) {
-      return se;
+      return document.scrollingElement || document.documentElement;
     }
   }
 
