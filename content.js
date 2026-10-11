@@ -43,6 +43,7 @@
   let rclick = null;   // 右键单击起点 { x, y, dir:'up'|'down' }（松开时滚到最上 / 最下）
   let idleTimer = 0;   // 闲置淡化计时器
   let fsActive = false; // 是否处于元素全屏（全屏时按钮隐藏）
+  let lastPageClick = null; // 页面本体上最后一次鼠标按下的元素（不含扩展按钮自身）
 
   /* ---------------- 设置读写 ---------------- */
 
@@ -180,6 +181,18 @@
       if (e.button === 0 && e.ctrlKey) onDragStart(e);
       else if (e.button === 2) onRightClick(e, null);
     });
+
+    /* 记录页面本体上最后一次鼠标按下的位置（不含扩展按钮自身）。
+       键盘 PgUp/PgDn/Home/End 的规则就是这个：Chromium 记的是最后一次鼠标按压点所在的
+       滚动容器 —— 点侧栏 → 滚侧栏；点主列表 → 滚主列表；新页面没点过 → 滚文档根。
+       扩展必须复刻同一条规则，否则「点在主列表里、按钮却去滚左侧栏」。
+       捕获阶段监听，不改动页面行为（不 preventDefault）。 */
+    document.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 && e.button !== 2) return; // 中键（autoscroll）不参与
+      const path = e.composedPath ? e.composedPath() : null;
+      if (path && host && path.indexOf(host) !== -1) return; // 点在扩展按钮上：目标不变
+      lastPageClick = (path && path[0]) || e.target || null;
+    }, true);
 
     (document.documentElement || document.body).appendChild(host);
   }
@@ -367,24 +380,46 @@
     return best;
   }
 
-  /* 滚动目标选择（与键盘翻页 / 滚轮「看哪儿滚哪儿」对齐）：
-     ① 视口中心点所在的可滚祖先 —— 浮层内容区/主内容区优先于文档根；
-     ② 可见且未被遮挡的可滚容器里滚程最大者 —— 被浮层遮住的背景列表会被排除；
-     ③ 文档根 —— 普通长页面（保持原行为）。
-     旧行为是「文档根能滚就无脑用它」，在「笔记详情浮层盖住列表」这类页面上会去滚背景列表。 */
+  /* 最近一次页面点击所在的可滚祖先 —— 与键盘 PgUp/PgDn/Home/End 同一规则（点哪儿滚哪儿）。
+     元素已被移除（SPA 换页/列表重渲染）则视为没有点击过，交给后面的规则。
+     例外：最近的可滚祖先已经被浮层遮住（如点卡片打开详情浮层后，卡片所在的背景列表被盖住）→
+     不认它，交给 ②③④ 去选浮层里那个看得见的滚动区（否则又会去滚被遮住的背景列表）。 */
+  function clickScroller() {
+    let el = lastPageClick;
+    if (!el || !el.isConnected) { lastPageClick = null; return null; }
+    while (el && el !== document.body && el !== document.documentElement) {
+      if (canScrollEl(el)) return isUncovered(el) ? el : null;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  /* 滚动目标选择（与键盘翻页对齐）：
+     ① 最近一次页面点击所在的可滚祖先 —— 点侧栏滚侧栏、点主列表滚主列表（键盘同规则）；
+     ② 视口中心点所在的可滚祖先 —— 浮层内容区/主内容区优先于文档根；
+     ③ 文档根能滚 → 文档根（普通网页/列表页：键盘默认目标就是它）；
+     ④ 根滚不动（应用式布局 / 浮层页）→ 可见且未遮挡、滚程最大的容器。
+     历史：旧版「文档根能滚就无脑用根」在小红书详情浮层页会去滚被遮住的背景列表；
+     v1.3.3 改成「允许未遮挡容器抢根」，但全高的固定侧栏（YouTube 左侧导航
+     #guide-inner-content：240px × 全视口高、overflow-y:auto）会靠 clientHeight ≥ 视口一半
+     通过 mainArea 抢走目标 → 点按钮滚左侧栏。故把「根能滚 → 用根」提前到 ④ 之前。 */
   function getTarget() {
     try {
       const se = document.scrollingElement || document.documentElement;
       const rootOk = !!(se && se.scrollHeight - se.clientHeight > 4);
 
+      const clicked = clickScroller();
+      if (clicked) return clicked;
+
       const chain = centerScroller();
       if (chain && (!rootOk || mainArea(chain))) return chain;
 
-      const cand = largestUncoveredScroller();
-      if (cand && (!rootOk || mainArea(cand))) return cand;
-
       if (rootOk) return se;
-      return chain || cand || null;
+
+      const cand = largestUncoveredScroller();
+      if (cand) return cand;
+
+      return chain || se;
     } catch (err) {
       return document.scrollingElement || document.documentElement;
     }
