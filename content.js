@@ -366,18 +366,67 @@
     return first;
   }
 
-  /* 可见且未被遮挡的可滚容器里，滚程（scrollHeight-clientHeight）最大者 */
+  /* 可见且未被遮挡的可滚容器里，滚程（scrollHeight-clientHeight）最大者。
+     exclude 传入浮层容器时，把「把这个浮层包在里面的祖先容器」一起排除 —— 那是背景
+     容器（小红书 .feeds-page 把 .note-detail-mask 挂在子树里），不该被当成目标。 */
   function largestUncoveredScroller() {
+    return largestScrollerIn(document);
+  }
+
+  function largestScrollerIn(root, exclude) {
     let best = null;
     let bestD = 4;
-    const nodes = document.querySelectorAll('div, main, section, article');
+    const nodes = root.querySelectorAll('div, main, section, article');
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
       if (!canScrollEl(n) || !isUncovered(n)) continue;
+      if (exclude && (n === exclude || n.contains(exclude))) continue;
       const d = n.scrollHeight - n.clientHeight;
       if (d > bestD) { bestD = d; best = n; }
     }
     return best;
+  }
+
+  /* 文档根（viewport）是否真的可滚：光看内容溢出还不够 —— 站点常给 html/body 设
+     overflow:hidden 锁住滚动（弹层 / 详情浮层场景）。此时 scrollBy 仍能改 scrollTop
+     （JS 滚得动、用户滚轮滚不动），这种「假可滚」的根会把目标从浮层内的滚动区抢走：
+     实测小红书详情浮层根溢出 2821px 却 html/body 双 overflow:hidden
+     → 点按钮滚的是被遮住的背景列表。
+     viewport 的 overflow 取自 html；html 是 visible 时取 body（规范传播规则）。 */
+  function rootScrollable(se) {
+    if (!se || se.scrollHeight - se.clientHeight <= 4) return false;
+    const ho = getComputedStyle(document.documentElement).overflowY;
+    const bo = document.body ? getComputedStyle(document.body).overflowY : 'visible';
+    const vp = (ho && ho !== 'visible') ? ho : bo;
+    return vp !== 'hidden' && vp !== 'clip';
+  }
+
+  /* 视口中心点所在的「浮层」：fixed/absolute、带显式 z-index、面积 ≥ 视口 1/4 的祖先。
+     用途：详情浮层 / 模态框打开时，中心点常落在浮层里的图片等非滚动区上，而用户要滚的是
+     同一个浮层里的内容区；浮层容器还可能把背景列表挂在自己子树里（小红书 .feeds-page
+     就是 .note-detail-mask 的祖先），此时「中心点链上第一个可滚祖先」会撞到背景列表。
+     要求「显式 z-index」是为了排除网页主框架（YouTube 的 ytd-app：position:absolute、
+     z-index:auto、占满视口）—— 它不是浮层，认错会把目标选到框架内的侧栏上。
+     面积太小的（顶栏 / 悬浮图标 / 装饰）跳过；找不到返回 null。 */
+  function centerLayer() {
+    let el = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+    while (el && el !== document.body && el !== document.documentElement) {
+      const cs = getComputedStyle(el);
+      if ((cs.position === 'fixed' || cs.position === 'absolute') && cs.zIndex !== 'auto') {
+        const r = el.getBoundingClientRect();
+        const w = Math.min(Math.max(r.width, 0), window.innerWidth);
+        const h = Math.min(Math.max(r.height, 0), window.innerHeight);
+        if (w * h >= 0.25 * window.innerWidth * window.innerHeight && isUncovered(el)) return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  /* 浮层里的滚动目标：浮层自身可滚就用它，否则用它内部滚程最大的未遮挡容器。 */
+  function layerTarget(layer) {
+    if (canScrollEl(layer) && isUncovered(layer)) return layer;
+    return largestScrollerIn(layer);
   }
 
   /* 最近一次页面点击所在的可滚祖先 —— 与键盘 PgUp/PgDn/Home/End 同一规则（点哪儿滚哪儿）。
@@ -394,29 +443,47 @@
     return null;
   }
 
-  /* 滚动目标选择（与键盘翻页对齐）：
-     ① 最近一次页面点击所在的可滚祖先 —— 点侧栏滚侧栏、点主列表滚主列表（键盘同规则）；
-     ② 视口中心点所在的可滚祖先 —— 浮层内容区/主内容区优先于文档根；
-     ③ 文档根能滚 → 文档根（普通网页/列表页：键盘默认目标就是它）；
-     ④ 根滚不动（应用式布局 / 浮层页）→ 可见且未遮挡、滚程最大的容器。
-     历史：旧版「文档根能滚就无脑用根」在小红书详情浮层页会去滚被遮住的背景列表；
-     v1.3.3 改成「允许未遮挡容器抢根」，但全高的固定侧栏（YouTube 左侧导航
-     #guide-inner-content：240px × 全视口高、overflow-y:auto）会靠 clientHeight ≥ 视口一半
-     通过 mainArea 抢走目标 → 点按钮滚左侧栏。故把「根能滚 → 用根」提前到 ④ 之前。 */
+  /* 滚动目标选择：
+     ① 最近一次页面点击所在的可滚祖先 —— 点侧栏滚侧栏、点主列表滚主列表（与键盘同规则）；
+     ② 中心点链选中的容器若把「浮层」包在子树里（它是背景容器）→ 用浮层内的滚动区；
+     ③ 视口中心点所在的可滚祖先（浮层内容区 / 主内容区优先于文档根）；
+     ④ 视口中心被浮层盖住（中心点落在浮层里的图片等非滚动区）→ 用浮层内的滚动区；
+     ⑤ 文档根「真可滚」（内容溢出、且没被 overflow:hidden 锁住）→ 文档根；
+     ⑥ 根滚不动（应用式布局 / 浮层页）→ 可见且未遮挡、滚程最大的容器
+        （排除把浮层包在里面的背景容器）。
+     历史教训：① v1.3.3「允许未遮挡容器抢根」放跑了 YouTube 全高固定侧栏
+     （#guide-inner-content：240px × 全视口高、overflow-y:auto，靠 clientHeight ≥ 视口一半
+     通过 mainArea 抢走目标）→ v1.3.4 把「根能滚 → 用根」提前；
+     ② v1.3.4 的 rootOk 只看内容溢出，被 html/body{overflow:hidden} 锁住的「假可滚根」
+     会抢走小红书详情浮层里的滚动区（点按钮滚背景列表）→ v1.3.5 改用 rootScrollable；
+     ③ 小红书详情浮层的背景容器 .feeds-page 把浮层挂在自己子树里，isUncovered 会因
+     「中心点命中浮层元素 = 命中它的后代」而判它「未遮挡」→ v1.3.5 加第 ② 步和 ⑥ 的排除。 */
   function getTarget() {
     try {
       const se = document.scrollingElement || document.documentElement;
-      const rootOk = !!(se && se.scrollHeight - se.clientHeight > 4);
+      const rootOk = rootScrollable(se);
 
       const clicked = clickScroller();
       if (clicked) return clicked;
 
+      const layer = centerLayer();
       const chain = centerScroller();
+
+      if (layer && chain && chain !== layer && chain.contains(layer)) {
+        const inner = layerTarget(layer);
+        if (inner) return inner;
+      }
+
       if (chain && (!rootOk || mainArea(chain))) return chain;
+
+      if (layer) {
+        const inner = layerTarget(layer);
+        if (inner) return inner;
+      }
 
       if (rootOk) return se;
 
-      const cand = largestUncoveredScroller();
+      const cand = largestScrollerIn(document, layer);
       if (cand) return cand;
 
       return chain || se;
