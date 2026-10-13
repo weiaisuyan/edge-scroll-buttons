@@ -445,19 +445,20 @@
 
   /* 滚动目标选择：
      ① 最近一次页面点击所在的可滚祖先 —— 点侧栏滚侧栏、点主列表滚主列表（与键盘同规则）；
-     ② 中心点链选中的容器若把「浮层」包在子树里（它是背景容器）→ 用浮层内的滚动区；
-     ③ 视口中心点所在的可滚祖先（浮层内容区 / 主内容区优先于文档根）；
-     ④ 视口中心被浮层盖住（中心点落在浮层里的图片等非滚动区）→ 用浮层内的滚动区；
-     ⑤ 文档根「真可滚」（内容溢出、且没被 overflow:hidden 锁住）→ 文档根；
-     ⑥ 根滚不动（应用式布局 / 浮层页）→ 可见且未遮挡、滚程最大的容器
-        （排除把浮层包在里面的背景容器）。
+     ② 视口中心点落在「浮层」（fixed/absolute、带显式 z-index、面积 ≥ 视口 1/4）里时，
+        只认浮层内的滚动区；浮层里没有可滚的东西 → 根真可滚才滚根，否则什么都不滚；
+     ③ 视口中心点所在的可滚祖先（主内容区优先于文档根）；
+     ④ 文档根「真可滚」（内容溢出、且没被 overflow:hidden 锁住）→ 文档根；
+     ⑤ 根滚不动（应用式布局 / 浮层页）→ 可见且未遮挡、滚程最大的容器。
      历史教训：① v1.3.3「允许未遮挡容器抢根」放跑了 YouTube 全高固定侧栏
      （#guide-inner-content：240px × 全视口高、overflow-y:auto，靠 clientHeight ≥ 视口一半
      通过 mainArea 抢走目标）→ v1.3.4 把「根能滚 → 用根」提前；
      ② v1.3.4 的 rootOk 只看内容溢出，被 html/body{overflow:hidden} 锁住的「假可滚根」
      会抢走小红书详情浮层里的滚动区（点按钮滚背景列表）→ v1.3.5 改用 rootScrollable；
      ③ 小红书详情浮层的背景容器 .feeds-page 把浮层挂在自己子树里，isUncovered 会因
-     「中心点命中浮层元素 = 命中它的后代」而判它「未遮挡」→ v1.3.5 加第 ② 步和 ⑥ 的排除。 */
+     「中心点命中浮层元素 = 命中它的后代」而判它「未遮挡」→ v1.3.5 加浮层判定；
+     ④ 浮层里没有可滚内容时（短笔记 / 无评论）仍会回落到浮层外的背景容器，按钮照样
+     滚背景列表 → v1.3.6 让浮层分支直接兜底、不再回落。 */
   function getTarget() {
     try {
       const se = document.scrollingElement || document.documentElement;
@@ -467,23 +468,23 @@
       if (clicked) return clicked;
 
       const layer = centerLayer();
-      const chain = centerScroller();
-
-      if (layer && chain && chain !== layer && chain.contains(layer)) {
-        const inner = layerTarget(layer);
-        if (inner) return inner;
-      }
-
-      if (chain && (!rootOk || mainArea(chain))) return chain;
-
       if (layer) {
+        /* 中心点落在浮层里 → 只认浮层内的滚动区。浮层里没有可滚的东西时：
+           根真可滚就滚根（与键盘一致），否则什么都不滚（调用方拿到 null 直接早退，
+           doFlip / startHold / scrollToEdge 都已处理）——绝不回落到浮层外的容器：
+           背景容器常把浮层挂在自己子树里（小红书 .feeds-page 包着 .note-detail-mask），
+           「是否被遮挡」判不出来，一回落就会去滚背景列表。 */
         const inner = layerTarget(layer);
         if (inner) return inner;
+        return rootOk ? se : null;
       }
+
+      const chain = centerScroller();
+      if (chain && (!rootOk || mainArea(chain))) return chain;
 
       if (rootOk) return se;
 
-      const cand = largestScrollerIn(document, layer);
+      const cand = largestUncoveredScroller();
       if (cand) return cand;
 
       return chain || se;
