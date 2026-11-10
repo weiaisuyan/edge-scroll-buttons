@@ -29,7 +29,7 @@
 3. **Availability（上架范围）**
    Visibility 选 **Public**；Markets 默认全部市场即可。
 4. **Properties（属性）**
-   类别选 **高效工作**（英文界面为 Productivity；不是"开发人员工具"）；隐私政策见下方第 4 节（如必填 URL，可先按要求提供，或填 `weiaisuyansjd@gmail.com` 作为联系渠道并在描述中说明不收集数据）；支持邮箱填 `weiaisuyansjd@gmail.com`。
+   类别选 **高效工作**（英文界面为 Productivity；不是"开发人员工具"）；隐私政策见下方第 4 节（如必填 URL，可先按要求提供，或填 `weiaisuyansjd@gmail.com` 作为联系渠道并在描述中说明不收集数据）；支持邮箱填 `weiaisuyansjd@gmail.com`；支持链接可填 GitHub Issues：`https://github.com/weiaisuyan/edge-scroll-buttons/issues`。
 5. **Privacy（隐私问卷）**
    - 是否收集个人数据 → **否**；
    - 权限用途按第 3 节填写；

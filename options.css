@@ -269,6 +269,7 @@ input[type=range]:disabled { opacity: .45; cursor: not-allowed; }
   transition: border-color .15s ease;
 }
 .fb-mail:hover { border-bottom-color: var(--accent); }
+.fb-sep { color: var(--muted); font-size: 13px; }
 .copy-ok { font-size: 12px; color: var(--accent); }
 
 /* ---------- 样式迷你预览动画（与页面按钮同款动效） ---------- */

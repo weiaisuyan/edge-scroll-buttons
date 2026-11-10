@@ -476,6 +476,7 @@
   });
 
   /* ---------- 反馈：复制邮箱 ---------- */
+  /* 反馈渠道（页面顶部已列出）：GitHub Issues — https://github.com/weiaisuyan/edge-scroll-buttons/issues */
   function fallbackCopy(text, done) {
     const ta = document.createElement('textarea');
     ta.value = text;

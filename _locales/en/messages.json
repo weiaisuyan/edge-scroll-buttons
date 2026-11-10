@@ -76,8 +76,9 @@
   "opt_bak_read_fail": { "message": "Import failed: could not read the file" },
   "opt_bak_restored": { "message": "Settings restored" },
   "opt_bak_restored_n": { "message": "Settings restored, including $n$ excluded sites", "placeholders": { "n": { "content": "$1" } } },
-  "opt_fb_h2": { "message": "Feedback" },
-  "opt_fb_hint": { "message": "Found a problem, have a style idea or a feature request? Email me — every message is read:" },
+  "opt_fb_h2": { "message": "Feedback & support" },
+  "opt_fb_hint": { "message": "Found a problem or have an idea? Open a GitHub issue or send an email — every message is read:" },
+  "opt_fb_issues": { "message": "GitHub Issues" },
   "opt_copy": { "message": "Copy" },
   "opt_copied": { "message": "Copied" },
   "opt_foot": { "message": "· Settings save automatically and apply instantly; after an extension update, refresh open pages once." },
@@ -104,5 +105,5 @@
   "more_h2": { "message": "Want it prettier?" },
   "more_p": { "message": "Settings include 36 styles (Solid / Gradient / Glass / Breath / Flow / Metal), circle & rounded shapes, flip distance and speed controls. Before moving computers, export a backup from “Backup & restore”." },
   "guide_open_settings": { "message": "Open Settings" },
-  "guide_feedback": { "message": "Questions or ideas: " }
+  "guide_feedback": { "message": "Feedback" }
 }

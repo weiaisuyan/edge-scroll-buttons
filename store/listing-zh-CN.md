@@ -36,8 +36,9 @@
 ▍隐私承诺
 不收集、不存储、不传输任何个人数据：全部设置仅保存在你的浏览器本地；扩展不发起任何网络请求，不含任何分析或广告代码。
 
-▍反馈
-遇到问题或有好点子？发邮件到 weiaisuyansjd@gmail.com —— 每封都会看。
+▍反馈 / Feedback
+· GitHub Issues: https://github.com/weiaisuyan/edge-scroll-buttons/issues
+· Email: weiaisuyansjd@gmail.com
 
 ## 类别与搜索关键词（建议）
 · 类别：高效工作（英文界面 Productivity）

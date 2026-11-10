@@ -38,7 +38,8 @@ Settings live only in your local browser. Moving computers or reinstalling the b
 No personal data is collected, stored, or transmitted. All settings live in your browser's local storage; the extension makes no network requests and contains no analytics or ads.
 
 **▍Feedback**
-Questions or ideas? Email weiaisuyansjd@gmail.com — every message is read.
+· GitHub Issues: https://github.com/weiaisuyan/edge-scroll-buttons/issues
+· Email: weiaisuyansjd@gmail.com
 
 ## Category & search terms (suggested)
 · Category: Productivity

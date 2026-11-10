@@ -76,8 +76,9 @@
   "opt_bak_read_fail": { "message": "导入失败：文件读取错误" },
   "opt_bak_restored": { "message": "已恢复设置" },
   "opt_bak_restored_n": { "message": "已恢复设置，含 $n$ 个排除网站", "placeholders": { "n": { "content": "$1" } } },
-  "opt_fb_h2": { "message": "反馈与建议" },
-  "opt_fb_hint": { "message": "使用中遇到问题、有样式想法或功能建议，欢迎发邮件告诉我（每封必看）：" },
+  "opt_fb_h2": { "message": "反馈与支持 / Feedback & support" },
+  "opt_fb_hint": { "message": "遇到问题或有建议？直接开 GitHub Issue，或发邮件给我（每一条都会看）：" },
+  "opt_fb_issues": { "message": "GitHub Issues" },
   "opt_copy": { "message": "复制地址" },
   "opt_copied": { "message": "已复制" },
   "opt_foot": { "message": "· 设置自动保存、即时生效；扩展更新后，已打开的页面需要刷新一次。" },
@@ -104,5 +105,5 @@
   "more_h2": { "message": "想要更好看？" },
   "more_p": { "message": "设置页里有 36 款样式（纯色 / 渐变 / 玻璃 / 呼吸 / 流光 / 金属）、圆形与圆角两种形状，还能调整翻页幅度与各段速度。换电脑或重装浏览器前，记得在「备份与恢复」里导出一份设置文件。" },
   "guide_open_settings": { "message": "打开设置" },
-  "guide_feedback": { "message": "遇到问题或有建议：" }
+  "guide_feedback": { "message": "反馈 / Feedback" }
 }

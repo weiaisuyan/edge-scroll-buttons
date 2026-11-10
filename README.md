@@ -58,6 +58,7 @@
 
 修改代码后，到 `edge://extensions` 点本扩展卡片上的「刷新」（重新加载）按钮即可生效。
 
-## 反馈与建议
+## 反馈与支持 / Feedback & support
 
-使用中遇到问题、有样式想法或功能建议，欢迎发邮件：**weiaisuyansjd@gmail.com**
+- GitHub Issues: https://github.com/weiaisuyan/edge-scroll-buttons/issues
+- Email: weiaisuyansjd@gmail.com
